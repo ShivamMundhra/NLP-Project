@@ -2,7 +2,7 @@
 Team Name - **BitGraders**
 
 Members :
-- Govind Singh Shekhawat (18ucs003)
-- Akshay Solanki (18ucs225)
-- Atulya Singh (18ucs166)
-- Shivam Mundhra (18ucs012)
+- Govind Singh Shekhawat _(18ucs003)_
+- Akshay Solanki _(18ucs225)_
+- Atulya Singh _(18ucs166)_
+- Shivam Mundhra _(18ucs012)_
