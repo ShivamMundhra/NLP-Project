@@ -8,4 +8,4 @@ Members :
 - Govind Singh Shekhawat _(18ucs003)_
 
 
-The code for the project is contained in _code.py_ file and report in _NLP_Project_Report.pdf_.
+The code for the project is contained in _code.py_ file and report in _NLP-Project-Report.pdf_.
