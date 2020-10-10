@@ -60,6 +60,7 @@ uh2 = urllib.request.urlopen(site2)
 data2 = uh2.read().decode('utf8')
 
 # pre-processing
+data1 = data1.lower()
 data1 = re.sub('^Section [1-9].', '', data1)
 data1 = re.sub(r'==.*?==+', '', data1)
 data1 = re.sub(r'CHAPTER \d+', '', data1)
@@ -67,6 +68,7 @@ data1 = re.sub('[\(\[].*?[\)\]]', '', data1)
 data1 = re.sub(r'[^a-zA-Z0-9\s]', '', data1)
 data1 = data1.replace('\n', '')
 
+data2 = data2.lower()
 data2 = re.sub('^Section [1-9].', '', data2)
 data2 = re.sub(r'==.*?==+', '', data2)
 data2 = re.sub(r'CHAPTER \d+', '', data2)
@@ -80,7 +82,9 @@ token2 = nltk.word_tokenize(data2)
 
 # frequency Distribution
 fdist1 = FreqDist(token1)
+print(fdist1.most_common(20))
 fdist2 = FreqDist(token2)
+print(fdist2.most_common(20))
 
 fig = plt.figure(figsize=(40, 30))
 # plotting freq. Dist. of 20 most common words
@@ -89,9 +93,40 @@ fdist2.plot(20)
 
 # Plotting the relationship between
 # word length and word frequency
+# before removing stop words
 plotRelationShip(FreqDist(token1))
 plotRelationShip(FreqDist(token2))
 
+# removing stopwords
+# Finding Stopwords
+stop_words = set(stopwords.words('english'))
+
+# stopwords in data 1
+sp1 = []
+rem1 = []
+for w in token1:
+    if w in stop_words:
+        sp1.append(w)
+    else:
+	rem1.append(w)
+			 	
+
+# stopwords in data 2
+sp2 = []
+rem2 = []
+for w in token2:
+    if w in stop_words:
+        sp2.append(w)
+    else:
+	rem1.append(w)
+
+# Plotting the relationship between
+# word length and word frequency
+# after removing stop words
+
+plotRelationShip(FreqDist(rem1))
+plotRelationShip(FreqDist(rem2))
+	
 # Creating Word Cloud without StopWords
 wordcloud1 = WordCloud(width = 3000, height = 2000, random_state=1, background_color='black', colormap='Pastel1', stopwords = [], collocations=False).generate(data1)
 
@@ -106,21 +141,6 @@ plt.figure(figsize=(40, 30))
 plt.imshow(wordcloud2)
 # No axis details
 plt.axis("off");
-
-# Finding Stopwords
-stop_words = set(stopwords.words('english'))
-
-# stopwords in data 1
-sp1 = []
-for w in token1:
-    if w in stop_words:
-        sp1.append(w)
-
-# stopwords in data 2
-sp2 = []
-for w in token2:
-    if w in stop_words:
-        sp2.append(w)
 
 # Creating Word Cloud Again with Stop words
 modified_wordcloud1 = WordCloud(width = 3000, height = 2000, random_state=1, background_color='black', colormap='Pastel1', stopwords = sp1, collocations = False).generate(data1)
