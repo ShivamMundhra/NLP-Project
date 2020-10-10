@@ -18,10 +18,10 @@ def plot(X,Y,xlabel,ylabel,title):
 def plotRelationShip(fd):
 
 	# fd is the frequency distribution of each of word
-    # word length is a list that will
+    	# word length is a list that will
 	word_lengths = {}
     
-    for i in fd.keys():
+    	for i in fd.keys():
 		if len(i) not in word_lengths.keys():
 			word_lengths[len(i)] = fd[i]	#adding a new word length and its frequency
 		else:
@@ -59,7 +59,7 @@ print('Extracting ',site2)
 uh2 = urllib.request.urlopen(site2)
 data2 = uh2.read().decode('utf8')
 
-# pre-processing
+# pre-processing the text of Book-1
 data1 = data1.lower()
 data1 = re.sub('^Section [1-9].', '', data1)
 data1 = re.sub(r'==.*?==+', '', data1)
@@ -68,6 +68,7 @@ data1 = re.sub('[\(\[].*?[\)\]]', '', data1)
 data1 = re.sub(r'[^a-zA-Z0-9\s]', '', data1)
 data1 = data1.replace('\n', '')
 
+# pre-processing the text of Book-2
 data2 = data2.lower()
 data2 = re.sub('^Section [1-9].', '', data2)
 data2 = re.sub(r'==.*?==+', '', data2)
@@ -86,19 +87,16 @@ print(fdist1.most_common(20))
 fdist2 = FreqDist(token2)
 print(fdist2.most_common(20))
 
-fig = plt.figure(figsize=(40, 30))
 # plotting freq. Dist. of 20 most common words
+fig = plt.figure(figsize=(40, 30))
 fdist1.plot(20)
 fdist2.plot(20)
 
-# Plotting the relationship between
-# word length and word frequency
-# before removing stop words
+# Plotting the relationship between word length and word frequency before removing stop words
 plotRelationShip(FreqDist(token1))
 plotRelationShip(FreqDist(token2))
 
-# removing stopwords
-# Finding Stopwords
+# Finding and removing stopwords
 stop_words = set(stopwords.words('english'))
 
 # stopwords in data 1
@@ -120,41 +118,38 @@ for w in token2:
     else:
 	rem1.append(w)
 
-# Plotting the relationship between
-# word length and word frequency
-# after removing stop words
-
+# Plotting the relationship between word length and word frequency after removing stop words
 plotRelationShip(FreqDist(rem1))
 plotRelationShip(FreqDist(rem2))
 	
-# Creating Word Cloud without StopWords
-wordcloud1 = WordCloud(width = 3000, height = 2000, random_state=1, background_color='black', colormap='Pastel1', stopwords = [], collocations=False).generate(data1)
+# Creating Word Cloud before removing the stopwords
 
+# for data 1
+wordcloud1 = WordCloud(width = 3000, height = 2000, random_state=1, background_color='black', colormap='Pastel1', stopwords = [], collocations=False).generate(data1)
 plt.figure(figsize=(40, 30))
 plt.imshow(wordcloud1, interpolation = 'bilinear')
-# No axis details
 plt.axis("off");
 
+# for data 2
 wordcloud2 = WordCloud(width = 3000, height = 2000, random_state=1, background_color='black', colormap='Pastel1', stopwords = [], collocations=False).generate(data2)
-
 plt.figure(figsize=(40, 30))
 plt.imshow(wordcloud2)
-# No axis details
 plt.axis("off");
 
-# Creating Word Cloud Again with Stop words
+# Creating Word Cloud after removing stopwords
+
+# for data 1
 modified_wordcloud1 = WordCloud(width = 3000, height = 2000, random_state=1, background_color='black', colormap='Pastel1', stopwords = sp1, collocations = False).generate(data1)
 plt.figure(figsize=(40, 30))
 plt.imshow(modified_wordcloud1)
-# No axis details
 plt.axis("off");
 
-
+# for data 2
 modified_wordcloud2 = WordCloud(width = 3000, height = 2000, random_state=1, background_color='black', colormap='Pastel1', stopwords = sp2, collocations = False).generate(data2)
 plt.figure(figsize=(40, 30))
 plt.imshow(modified_wordcloud2)
-# No axis details
 plt.axis("off");
+
 
 #POS Tagging
 word_list1 = [w for w in token1 if not w in sp1]
