@@ -188,28 +188,28 @@ data2 = uh2.read().decode('utf8')
 # pre-processing the text of Book-1
 data1 = data1.lower()
 data1 = re.sub('^Section [1-9].', '', data1)
+contractions_re = re.compile('(%s)' % '|'.join(CONTRACTION_MAP.keys()))
+def replace(match):
+    return CONTRACTION_MAP[match.group(0)]
+data1 = contractions_re.sub(replace, data1)
 data1 = re.sub(r'==.*?==+', '', data1)
 data1 = re.sub(r'CHAPTER \d+', '', data1)
 data1 = re.sub('[\(\[].*?[\)\]]', '', data1)
 data1 = re.sub(r'[^a-zA-Z0-9\s]', '', data1)
 data1 = data1.replace('\n', '')
-contractions_re = re.compile('(%s)' % '|'.join(CONTRACTION_MAP.keys()))
-def replace(match):
-    return CONTRACTION_MAP[match.group(0)]
-data1 = contractions_re.sub(replace, data1)
 
 # pre-processing the text of Book-2
 data2 = data2.lower()
 data2 = re.sub('^Section [1-9].', '', data2)
+contractions_re = re.compile('(%s)' % '|'.join(CONTRACTION_MAP.keys()))
+def replace(match):
+    return CONTRACTION_MAP[match.group(0)]
+data2 = contractions_re.sub(replace, data2)
 data2 = re.sub(r'==.*?==+', '', data2)
 data2 = re.sub(r'CHAPTER \d+', '', data2)
 data2 = re.sub('[\(\[].*?[\)\]]', '', data2)
 data2 = re.sub(r'[^a-zA-Z0-9\s]', '', data2)
 data2 = data2.replace('\n', '')
-contractions_re = re.compile('(%s)' % '|'.join(CONTRACTION_MAP.keys()))
-def replace(match):
-    return CONTRACTION_MAP[match.group(0)]
-data2 = contractions_re.sub(replace, data2)
 
 # tokenizing
 token1 = nltk.word_tokenize(data1)
