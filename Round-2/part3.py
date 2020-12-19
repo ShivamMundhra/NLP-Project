@@ -49,7 +49,6 @@ print('-------------------------------------------------------------------------
 
 # extracting different kinds of relations
 print('Extracting different kinds of relations')
-# IN = re.compile(r'.*\bin\b(?!\b.+ing)')
 SON = re.compile(r'.*\bson\b')
 DAUGHTER = re.compile(r'.*\bdaughter\b')
 BROTHER = re.compile(r'.*\bbrother\b')
@@ -67,10 +66,6 @@ print('------------------------------------BROTHER------------------------------
 for rel in nltk.sem.extract_rels('PER', 'PER', namedEnt1, corpus='ace', pattern=BROTHER):
     print(nltk.sem.rtuple(rel))
 
-print('---------------------------------WIFE-----------------------------------------------------------------')
-for rel in nltk.sem.extract_rels('PER', 'PER', namedEnt1, corpus='ace', pattern=WIFE):
-    print(nltk.sem.rtuple(rel))
-
 print('--------------------------------------------------------------------------------------------------')
 print('--------------------------------------------------------------------------------------------------')
 print('--------------------------------------------------------------------------------------------------')
@@ -86,10 +81,6 @@ for rel in nltk.sem.extract_rels('PER', 'PER', namedEnt2, corpus='ace', pattern=
 
 print('------------------------------------BROTHER--------------------------------------------------------------')
 for rel in nltk.sem.extract_rels('PER', 'PER', namedEnt2, corpus='ace', pattern=BROTHER):
-    print(nltk.sem.rtuple(rel))
-
-print('---------------------------------WIFE-----------------------------------------------------------------')
-for rel in nltk.sem.extract_rels('PER', 'PER', namedEnt2, corpus='ace', pattern=WIFE):
     print(nltk.sem.rtuple(rel))
 
 print('--------------------------------------------------------------------------------------------------')
