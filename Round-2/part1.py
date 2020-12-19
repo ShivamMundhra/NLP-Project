@@ -203,27 +203,3 @@ for word in verbs2:
 
 plotRelationShip(FreqDist(lst), 'verb.')
 print('--------------------------------------------------------------------------------------------------')
-
-
-# print(nouns1[:5])
-# print(verbs1[:5])
-# print(nouns2[:5])
-# print(verbs2[:5])
-
-# syn = wordnet.synsets('dog', pos=wordnet.NOUN)[0]
-# print(syn)
-
-# # print(syn.lemmas())
-# # print(syn.hypernyms())
-# # print(syn.root_hypernyms())
-# print(syn.lexname())
-
-# for word in nouns1[:5]:
-#     syn = wordnet.synsets(word, pos=wordnet.NOUN)
-#     if len(syn) > 0:
-#         print(syn[0].lexname())
-
-# for word in verbs1[:5]:
-#     syn = wordnet.synsets(word, pos=wordnet.VERB)
-#     if len(syn) > 0:
-#         print(syn[0].lexname())
