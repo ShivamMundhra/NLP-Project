@@ -64,12 +64,9 @@ def metrics(truth, run):
         False_negative = len(truth) - len(run)
     else:
         False_negative = 0
-    accuracy = (float(True_positive) + float(True_negative))/(float(True_positive) +
-                                                              float(True_negative) + float(False_positive) + float(False_negative))
-    precision = float(True_positive) / \
-        (float(True_positive) + float(False_positive))
-    recall = float(True_positive) / \
-        (float(True_positive) + float(False_negative))
+    accuracy = (float(True_positive) + float(True_negative)) / (float(True_positive) + float(True_negative) + float(False_positive) + float(False_negative))
+    precision = float(True_positive) / (float(True_positive) + float(False_positive))
+    recall = float(True_positive) / (float(True_positive) + float(False_negative))
     F_measure = (2 * recall * precision) / (recall + precision)
     print("Accuracy: ", accuracy)
     print("Recall: ", recall)
@@ -79,29 +76,6 @@ def metrics(truth, run):
          'Predicted Positive': [False_positive, True_positive]}
     metricsdf = pd.DataFrame(d, index=['Negative Cases', 'Positive Cases'])
     return metricsdf
-
-# def metrics(truth, run):
-#     truth = truth
-#     run = run
-#     TP = float(len(set(run) & set(truth)))
-#     if float(len(run)) >= float(TP):
-#         FP = len(run) - TP
-#     else:
-#         FP = TP - len(run)
-#     TN = 0
-#     if len(truth) >= len(run):
-#         FN = len(truth) - len(run)
-#     else:
-#         FN = 0
-#     accuracy = (float(TP)+float(TN))/float(len(truth))
-#     recall = (float(TP))/float(len(truth))
-#     precision = float(TP)/(float(FP)+float(TP))
-#     print("The accuracy is %r" % accuracy)
-#     print("The recall is %r" % recall)
-#     print("The precision is %r" % precision)
-#     d = {'Predicted Negative': [TN, FN], 'Predicted Positive': [FP, TP]}
-#     metricsdf = pd.DataFrame(d, index=['Negative Cases', 'Positive Cases'])
-#     return metricsdf
 
 
 print('--------------------------------------------------------------------------------------------------')
@@ -222,6 +196,3 @@ print('')
 print('Evaluation :')
 print(metrics(truth, run))
 print('--------------------------------------------------------------------------------------------------')
-
-# print([" ".join(w+" "+t for w, t in elt)
-#        for elt in chunked if isinstance(elt, nltk.Tree)])
