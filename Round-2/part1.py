@@ -1,16 +1,17 @@
-from nltk.corpus import wordnet
 import nltk
 import urllib.request
 import urllib.parse
 import urllib.error
 import ssl
 import json
-import nltk
+import pandas as pd
 import re
 from nltk.probability import FreqDist
 import matplotlib.pyplot as plt
+import numpy as np
 from wordcloud import WordCloud, STOPWORDS
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet
 
 # nltk.download('wordnet')
 lemmatizer = nltk.WordNetLemmatizer()
@@ -40,18 +41,17 @@ def removePrefix(text, prefix):
 
 
 def plot(X, Y, xlabel, ylabel, title):
-    plt.bar(X, Y, tick_label=X, width=0.8, color=['red', 'green'])
+    plt.bar(X, Y, tick_label=X, width=0.8, color=['red', 'blue'])
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.xticks(rotation=90)
     plt.title(title)
     plt.show()
+    plt.subplots_adjust(bottom = 0.18)
 
 
-def plotRelationShip(fd, prefix):
-
+def plotRelationShip(fd, prefix, title):
     data = {}
-
     for i in fd.keys():
         ii = removePrefix(i, prefix)
         if ii not in data.keys():
@@ -64,51 +64,68 @@ def plotRelationShip(fd, prefix):
 
     for i in data.keys():
         X.append(i)
-
     for i in X:
         Y.append(data[i])
 
     # Plotting a bar graph for recorded data
     xlabel = 'Category/Supersense'
     ylabel = 'Frequency'
-    title = 'Relationship between categories and frequency'
     plot(X, Y, xlabel, ylabel, title)
 
+def extractNounVerb(wordList):
+    tagged = nltk.pos_tag(wordList)
+    nouns = set()
+    verbs = set()
+    for word, tag in tagged:
+        word = normalise(word, tag)
+        if tag.startswith('N'):
+            nouns.add(word)
+        if tag.startswith('V'):
+            verbs.add(word)
+    return list(nouns), list(verbs)
 
-print('--------------------------------------------------------------------------------------------------')
-print('Downloading books')
-site1 = 'http://www.gutenberg.org//cache/epub/7864/pg7864.txt'
-print('Extracting ', site1)
-uh1 = urllib.request.urlopen(site1)
-data1 = uh1.read().decode('utf8')
+def plotNoun(nouns, title):
+    lst = []
+    for word in nouns:
+        syn = wordnet.synsets(word, pos=wordnet.NOUN)
+        if len(syn) > 0:
+            lst.append(syn[0].lexname())
+    plotRelationShip(FreqDist(lst), 'noun.', title)
 
-# Extracting second text
-site2 = 'https://www.gutenberg.org//cache/epub/22381/pg22381.txt'
-print('Extracting ', site2)
-uh2 = urllib.request.urlopen(site2)
-data2 = uh2.read().decode('utf8')
-print('Downloading of books complete')
-print('--------------------------------------------------------------------------------------------------')
+def plotVerb(verbs, title):
+    lst = []
+    for word in verbs1:
+        syn = wordnet.synsets(word, pos=wordnet.VERB)
+        if len(syn) > 0:
+            lst.append(syn[0].lexname())
+    plotRelationShip(FreqDist(lst), 'verb.', title)
 
-# pre-processing the text of Book-1
-print('Preprocessing text of both books')
-data1 = data1.lower()
-data1 = re.sub('^Section [1-9].', '', data1)
-data1 = re.sub(r'==.*?==+', '', data1)
-data1 = re.sub(r'CHAPTER \d+', '', data1)
-data1 = re.sub('[\(\[].*?[\)\]]', '', data1)
-data1 = re.sub(r'[^a-zA-Z0-9\s]', '', data1)
-data1 = data1.replace('\n', '')
+def importData(site):
+    print('--------------------------------------------------------------------------------------------------')
+    print('Downloading books')
+    print('Extracting ', site)
+    uh1 = urllib.request.urlopen(site)
+    data = uh1.read().decode('utf8')
+    return data
 
-# pre-processing the text of Book-2
-data2 = data2.lower()
-data2 = re.sub('^Section [1-9].', '', data2)
-data2 = re.sub(r'==.*?==+', '', data2)
-data2 = re.sub(r'CHAPTER \d+', '', data2)
-data2 = re.sub('[\(\[].*?[\)\]]', '', data2)
-data2 = re.sub(r'[^a-zA-Z0-9\s]', '', data2)
-data2 = data2.replace('\n', '')
-print('Preprocessing done')
+def preProcessing(data):
+    data = data.lower()
+    data = re.sub('^Section [1-9].', '', data)
+    data = re.sub(r'==.*?==+', '', data)
+    data = re.sub(r'CHAPTER \d+', '', data)
+    data = re.sub('[\(\[].*?[\)\]]', '', data)
+    data = re.sub(r'[^a-zA-Z0-9\s]', '', data)
+    data = data.replace('\n', '')
+    return data
+
+
+# Importing data
+data1 = importData(' http://www.gutenberg.org//cache/epub/7864/pg7864.txt')
+data2 = importData('https://www.gutenberg.org//cache/epub/22381/pg22381.txt')
+# Preprocessing
+print('Preprocessing texts')
+data1 = preProcessing(data1)
+data2 = preProcessing(data2)
 print('--------------------------------------------------------------------------------------------------')
 
 # tokenizing
@@ -138,68 +155,23 @@ print('-------------------------------------------------------------------------
 
 # extracting nouns and verbs using pos tagging
 print('Extracting nouns and verbs using POS tagging')
-tagged1 = nltk.pos_tag(word_list1)
-n1 = set()
-v1 = set()
-for word, tag in tagged1:
-    word = normalise(word, tag)
-    if tag.startswith('N'):
-        n1.add(word)
-    if tag.startswith('V'):
-        v1.add(word)
+nouns1, verbs1 = extractNounVerb(word_list1)
+nouns2, verbs2 = extractNounVerb(word_list2)
 
-tagged2 = nltk.pos_tag(word_list2)
-n2 = set()
-v2 = set()
-for word, tag in tagged2:
-    word = normalise(word, tag)
-    if tag.startswith('N'):
-        n2.add(word)
-    if tag.startswith('V'):
-        v2.add(word)
-
-nouns1 = list(n1)
-verbs1 = list(v1)
-nouns2 = list(n2)
-verbs2 = list(v2)
 print('All nouns and verbs extracted')
 print('--------------------------------------------------------------------------------------------------')
 
 # finding the category of each noun and verb and plotting frequency distribution
 print('Finding the category of each noun and verb using wordnet and plotting frequency distribution')
-print('Plot for nouns of book-1:')
-lst = []
-for word in nouns1:
-    syn = wordnet.synsets(word, pos=wordnet.NOUN)
-    if len(syn) > 0:
-        lst.append(syn[0].lexname())
 
-plotRelationShip(FreqDist(lst), 'noun.')
+print('Plot for nouns of book-1:')
+plotNoun(nouns1, 'Frequency Distribution of nouns in book 1')
 
 print('Plot for verbs of book-1:')
-lst = []
-for word in verbs1:
-    syn = wordnet.synsets(word, pos=wordnet.VERB)
-    if len(syn) > 0:
-        lst.append(syn[0].lexname())
-
-plotRelationShip(FreqDist(lst), 'verb.')
+plotVerb(verbs1, 'Frequency Distribution of verbs in book 1')
 
 print('Plot for nouns of book-2:')
-lst = []
-for word in nouns2:
-    syn = wordnet.synsets(word, pos=wordnet.NOUN)
-    if len(syn) > 0:
-        lst.append(syn[0].lexname())
-
-plotRelationShip(FreqDist(lst), 'noun.')
+plotNoun(nouns2, 'Frequency Distribution of nouns in book 2')
 
 print('Plot for verbs of book-2:')
-lst = []
-for word in verbs2:
-    syn = wordnet.synsets(word, pos=wordnet.VERB)
-    if len(syn) > 0:
-        lst.append(syn[0].lexname())
-
-plotRelationShip(FreqDist(lst), 'verb.')
-print('--------------------------------------------------------------------------------------------------')
+plotVerb(verbs2, 'Frequency Distribution of verbs in book 2')
